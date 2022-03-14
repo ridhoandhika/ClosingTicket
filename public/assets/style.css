@@ -1,0 +1,42 @@
+
+
+
+body {
+	background:rgb(219, 68, 85);
+	font-size:13px;
+}
+.hide {
+	display:none;
+}
+#logo {
+	padding:10px 10px 15px 10px;
+	position:fixed;
+	top:0;
+	left:0;
+	width:100%;
+	box-sizing:border-box;
+	background:#ffffff;
+}
+#logo1-wrap {
+	float:left;
+	height:33px;
+	width:158px;
+	background:url(../assets/img/logo1.png) center center no-repeat;
+	background-size:contain;
+}
+#logo2-wrap {
+	float:right;
+	height:33px;
+	width:158px;
+	background:url(../assets/img/logo2.png) center center no-repeat;
+	background-size:contain;
+}
+.form-control:focus {
+	box-shadow:none;
+}
+#nav {
+	position:fixed;
+	bottom:0;
+	right:0;
+	padding:5px;
+}

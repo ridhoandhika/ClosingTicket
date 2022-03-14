@@ -1,0 +1,253 @@
+.invisible {
+	visibility:hidden;
+}
+#wizard {
+	position:fixed;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	padding-bottom:58px;
+    
+}
+#wizard ._container {
+	position:relative;
+	height:100%;
+	width:100%;
+	max-width:800px;
+	margin:0 auto;
+}
+.wizard {
+	margin:0;
+	position:absolute;
+	top:50%;
+	left:50%;
+	-ms-transform:translate(-50%, -50%);
+	transform:translate(-50%, -50%);
+	box-sizing:border-box;
+	min-width:70%;
+}
+.box {
+	background:rgba(255, 255, 255, 1);
+	padding:20px;
+	border-radius:5px;
+}
+.wizard-label {
+	color:#ffffff;
+	border-bottom:2px solid #ffffff;
+    line-height:46px;
+}
+.wizard-label-ts {
+	color:#ffffff;
+	font-size: 0.8rem;
+	text-align: right;
+}
+::-webkit-input-placeholder { /* Edge */
+	text-transform:none;
+	font-size:0.7rem;
+	font-style:italic;
+	line-height:normal;
+}
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+	text-transform:none;
+	font-size:0.7rem;
+	font-style:italic;
+	line-height:normal;
+}
+::placeholder {
+	text-transform:none;
+	font-size:0.7rem;
+	font-style:italic;
+	line-height:normal;
+}
+#wrap-ticket {
+	position:relative;
+}
+#input-ticket {
+	text-transform:uppercase;
+	padding-right:72px;
+}
+#submit-ticket {
+	position:absolute;
+	top:4px;
+	right:4px;
+	background:rgb(219, 68, 85);
+	color:#ffffff;
+}
+.form-text.text-muted {
+	color:#f0f0f0 !important;
+}
+#wizard .input-group-text {
+	font-size:0.8rem;
+	width:160px;
+}
+#wizard .input-group {
+	margin-bottom:4px;
+}
+#show-check .form-control {
+	font-size:0.8rem;
+}
+#wizard .form-control:disabled, 
+#wizard .form-control[readonly]{
+	background:#f0f0f0;
+}
+#uid {
+    line-height:58px;
+    position:fixed;
+    bottom:0;
+    right:0;
+    z-index:10;
+    padding:0 15px;
+	color:#ffffff;
+    font-size:12px;
+}
+#show-finish {
+	text-align:center;
+	color:#ffffff;
+}
+#show-finish-myip {
+	text-align:center;
+	color:#ffffff;
+}
+
+#show-finish-nd  {
+	text-align:center;
+	color:#ffffff;
+}
+#show-finish-ip {
+	text-align:center;
+	color:#ffffff;
+}
+#show-finish-ipradius {
+	text-align:center;
+	color:#ffffff;
+}
+#show-finish-nde {
+	text-align:center;
+	color:#ffffff;
+}
+#show-finish-nds {
+	text-align:center;
+	color:#ffffff;
+}
+#show-finish-rdmn {
+	text-align:center;
+	color:#ffffff;
+}
+#show-finish-rdm {
+	text-align:center;
+	color:#ffffff;
+}
+#show-finish-pcrf {
+	text-align:center;
+	color:#ffffff;
+}
+.btn-sm {
+	font-size:0.8125rem;
+}
+.btn-help {
+	display: flex;
+  	justify-content: center;
+  	align-items: center;
+}
+#show-eligible {
+	height:200px;
+}
+#show-eligible {
+	text-align:center;
+	color:#ffffff;
+}
+#submit-close-y,
+#submit-close-n,
+#submit-wait-y,
+#submit-wait-n {
+	width:70px;
+}
+#disclaimer {
+	color:#ffffff;
+}
+#ask-wait .modal-body {
+	text-align:center;
+}
+
+
+#loader-ticket {
+	bottom:20px;
+}
+
+#show-help {
+	background : #fff;
+}
+.center-btn {
+ 	display: flex;
+  	justify-content: center;
+  	align-items: center;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}  
+
+.info-text {
+	margin-left: 10px;
+}
+
+.loader {
+	position:absolute;
+	z-index:5;
+	bottom:0;
+	right:0;
+}
+.lds-ellipsis {
+  display: inline-block;
+  position: relative;
+  width: 64px;
+  height: 33px;
+}
+.lds-ellipsis div {
+  position: absolute;
+  top: 17px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgb(219, 68, 85);
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+.lds-ellipsis div:nth-child(1) {
+  left: 6px;
+  animation: lds-ellipsis1 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(2) {
+  left: 6px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(3) {
+  left: 26px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(4) {
+  left: 45px;
+  animation: lds-ellipsis3 0.6s infinite;
+}
+@keyframes lds-ellipsis1 {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes lds-ellipsis3 {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+@keyframes lds-ellipsis2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(19px, 0);
+  }
+}
