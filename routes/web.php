@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 // use App\Http\Controller;
 use App\Http\Controllers\CheckController;
+use App\Http\controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,7 +20,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-
+Route::get('/Dashboard',[DashboardController::class, 'index']);
+Route::get('/Load_task',[DashboardController::class, 'Load_task']);
+Route::post('/Search',[DashboardController::class, 'jSearchTicket']);
 Route::get('/Check',[CheckController::class, 'index']);
 Route::post('/createTask',[CheckController::class, 'createTask']);
 Route::post('/retrieveToken',[CheckController::class, 'retrieveToken']);

@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('content')
+
 <div id="wizard">
     <div class="_container">
         <div class="wizard" data-wizard="0" id="ask-ticket">
@@ -284,4 +285,11 @@
         </div>
     </div>
 </div>
+
 @endsection
+
+
+{{-- <script src="{{asset('assets/js/Check/index.js')}}"></script> --}}
+@push('scripts')
+    <script src="{{asset('assets/js/Check/index.js')}}"></script>
+@endpush

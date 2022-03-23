@@ -1,0 +1,24 @@
+.rotate-out {
+	position: relative;
+	margin:0 auto;
+	width: 40px;
+}
+.rotate-in {
+	transform: rotate(180deg);
+    writing-mode: vertical-rl;
+    white-space: nowrap;
+    overflow: visible;
+	line-height: 40px;
+	font-size: 20px;
+}
+
+
+.modal-lg, .modal-content {
+    max-width: 95%;
+}
+.table tfoot tr th {
+	border-top:1px solid #dee2e6;
+}
+#card-list {
+	margin-bottom:45px;
+}

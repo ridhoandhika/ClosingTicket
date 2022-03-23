@@ -93,11 +93,6 @@ $(function() {
 			contentType: 'application/json',
 			data: JSON.stringify({ 'uid': document.getElementById("uid").innerHTML,
             'data': $('#submit-speed').data()}),
-            // data2: {'uid': document.getElementById("uid").innerHTML},
-            // 'agedd_id='+ageddajax +'&agemm_id='+agemmajax +'&ageyyyy_id='+ageyyyyajax
-              
-            // JSON.stringify($('#submit-speed').data()),
-                 
 			success: function(response3) {
                 // console.log(donwload);
 				$('#ookla-test').modal('hide');
@@ -105,8 +100,9 @@ $(function() {
 				if(response3.speed_passed > 0) {
                     $('#confirm-speed').val('Layak');
 					flagSpeed = true;
-					// retrievepassed();
-				}else{
+				}else if(response3.speed_passed == 0){
+					$('#confirm-speed').val('Belum Layak');
+				}else {
 					finish('failed');
 				}
                 sendAutoClose();
@@ -144,7 +140,6 @@ function doTask() {
 				$('#uidookla').html(response1.data.uid);
 				$('#uidooklaa').html(response1.data.uid);
 				timerWait0 = setTimeout(function() {
-					// alert('Output dari nossa tidak ditemukan');
 					$('#ask-ticket').addClass('hide');
 					$('#show-check').addClass('hide');
 					finish('failed');
@@ -175,15 +170,14 @@ function doToken1() {
 		success: function(response9){
 			if(response9.success){
 				clearTimeout(timerWait0);
-				timerWait1 = setTimeout(function() {
-					// finish('failed');
-					$('#show-check').addClass('hide');
-					$('#show-finish-nds').removeClass('hide');
-					$('#ask-ticket').addClass('hide');
-				}, 60000);
+				// timerWait1 = setTimeout(function() {
+				// 	// finish('failed');
+				// 	$('#show-check').addClass('hide');
+				// 	$('#show-finish-nds').removeClass('hide');
+				// 	$('#ask-ticket').addClass('hide');
+				// }, 60000);
 				// doNDByIN();
-                doWho(1);
-				
+				doIPRadius();
 			}
 			else {
 				$('#ask-ticket').addClass('hide');
@@ -194,48 +188,6 @@ function doToken1() {
 		error: function(a) {
 			clearTimeout(timerWait0);
 			alert('30002 tidak mendapatkan output dari APIM');
-			finish('failed');
-		}
-	});
-}
-function doNDByIN(){
-	$.ajax({
-		method: 'post',
-		dataType: 'json',
-		url: site_url('Check/retrieveNDByIN'),
-		data: {},
-		success: function(response9){
-			if(response9.status == 200) {
-				if(response9.success){
-					clearTimeout(timerWait1);
-					if(response9.data.nd != null){
-						timerWait2 = setTimeout(function() {
-							$('#show-finish-ipradius').removeClass('hide');
-							$('#ask-ticket').addClass('hide');
-							$('#show-check').addClass('hide');
-						}, 60000);
-						doIPRadius();
-						// doWho(1);
-						}
-					else {
-						$('#show-finish-nd').removeClass('hide');
-						$('#ask-ticket').addClass('hide');
-						$('#show-check').addClass('hide');
-					}
-				}else{
-					$('#show-finish-nds').removeClass('hide');
-					$('#ask-ticket').addClass('hide');
-					$('#show-check').addClass('hide');
-				}
-			}
-			else {
-				$('#show-finish-nds').removeClass('hide');
-				$('#ask-ticket').addClass('hide');
-				$('#show-check').addClass('hide');
-			}
-		},
-		error: function(a) {
-			alert('Nossa failed');
 			finish('failed');
 		}
 	});
@@ -251,8 +203,8 @@ function doIPRadius() {
             'uid': document.getElementById("uid").innerHTML
         },
 		success: function(response14) {
-            if(response14.frame_ip != null) {			
-
+            if(response14.data.frame_ip != null) {			
+				doWho(1);
             }
 					
 		},
@@ -284,7 +236,7 @@ function doWho(attempt) {
                             'uid': document.getElementById("uid").innerHTML,
 						},
 						success: function(response3) {
-						
+							clearTimeout(timerWait2);
                             // console.log(data);
                             if(response3.success) {
 								$('#ask-wait-0').modal('hide');
@@ -292,9 +244,8 @@ function doWho(attempt) {
 								$('#show-check').removeClass('hide');
 								$('#confirm-ticket').val(response3.ticket);
 								$('#confirm-nd').val(response3.nd);
-                                // doNDByIP();
-								// doIPRadius();
 								doRedaman();
+								doSpeed()
                                
                             }
 						},
@@ -321,50 +272,6 @@ function doWho(attempt) {
 	}
 }
 
-function doNDByIP() {
-    $.ajax({
-        method: 'post',
-        dataType: 'json',
-        url: 'retrieveNDByIP',
-        data: {
-            'uid': document.getElementById("uid").innerHTML
-        },
-        success: function(response5) {
-            clearTimeout(timerWait1);
-                    if(response5.nd != null) {
-                        $('#ask-wait-0').modal('hide');
-                        $('#ask-ticket').addClass('hide');
-                        $('#show-check').removeClass('hide');
-                        $('#confirm-ticket').val(response5.ticket);
-                        $('#confirm-nd').val(response5.nd);
-                        // $('#confirm-ts').text(response5.data.ts + " WIB");
-                        doIPRadius();
-                        doRedaman();
-                        timerWait2 = setTimeout(function() {
-                            $('#show-finish-rdm').removeClass('hide');
-                            $('#ask-ticket').addClass('hide');
-                            $('#show-check').addClass('hide');
-                            }, 60000);
-
-                        
-                        // doSpeed();
-                        // doSpeedAcsis();
-                                
-                    }else {
-                    
-                        $('#show-finish-nd').removeClass('hide');
-                        $('#ask-ticket').addClass('hide');
-                        $('#show-check').addClass('hide');
-                    }
-                },
-        error: function(err) {
-            clearTimeout(timerWait1);
-            $('#show-finish-nde').removeClass('hide');
-            $('#ask-ticket').addClass('hide');
-            $('#show-check').addClass('hide');
-        }
-    });	
-}
 
 
 function doOokla(){
@@ -465,13 +372,12 @@ function doRedaman() {
 	});
 }
 
-
 function doSpeed() {
 	$('#loader-speed').removeClass('hide');
         $.ajax({
             method: 'post',
             dataType: 'json',
-            url: 'retrievePCRF',
+            url: '/retrievePCRF',
             data: {
                 'uid': document.getElementById("uid").innerHTML
             },
@@ -510,9 +416,9 @@ function sendAutoClose(){
 		data: {
             'uid': document.getElementById("uid").innerHTML
         },
-		success: function(response1) {
-            if((response1.close) > 0) {
-                    $('#show-eligible-close-y').removeClass('hide');
+		success: function(response22) {
+            if(response22.close > 0) {
+				$('#show-eligible-close-y').removeClass('hide');
             }
             else {
                 $('#show-eligible-close-y').addClass('hide');

@@ -5,7 +5,8 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
-use Session;
+use Illuminate\Support\Facades\Session;
+// use Session;
 
 use Illuminate\Http\Request;
 
@@ -22,15 +23,14 @@ class CheckController extends Controller
 			'success' => false
 		);
 
-        // $request->nd
-        // var_dump($request);
-        //$nd = $request->ndnumber .='@telkom.net';
         $uid = time().'.'.sha1(rand(111111,999999));
         DB::table('task_active')->insert([
             'uid' => $uid,
             'ticket' => $request->ticket,
             'nd_number' => $request->nd,
-            'nd' => $request->nd
+            'nd' => $request->nd,
+            'nd_by' => 'sonic',
+            'ts' => now()
         ]);
 
        
@@ -47,18 +47,14 @@ class CheckController extends Controller
                 'success' => false
             );
         }
-        // $uid->withCookie(cookie($uid));
 
         echo json_encode($output);
-
-
     }
 
     public function retrieveToken(Request $request){
         $output = array(
 			'success' => false
 		);
-
        
         $response = Http::withHeaders([
             'Content-Type' => 'application/json'
@@ -82,72 +78,9 @@ class CheckController extends Controller
         }
         
         echo json_encode($output);
-
         
     }
 
-    public function saveMyIP(Request $request){
-        $output = array(
-			'success' => false
-		);
-
-
-        $data = DB::table('task_active')
-        ->select('nd','ticket')
-        ->where('uid', $request->uid)
-        ->first();
-
-
-        DB::table('task_active')
-        ->where('uid', $request->uid)
-        ->update(['ip_addr' => $request->ip_addr]);
-        
-        $output = array(
-			'success' => true,
-            'ticket' => $data->ticket,
-            'nd' => $data->nd
-		);
-        echo json_encode($output);
-    }
-
-    public function retrieveNDByIP(Request $request){
-        $output = array(
-			'success' => false
-		);
-        $data = DB::table('task_active')
-        ->select('ip_addr','bearer','ticket')
-        ->where('uid', $request->uid)
-        ->first();
-
-       
-        $response = Http::withHeaders([
-            'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer '.$data->bearer.''
-        ])->get('https://apigw.telkom.co.id:7777/gateway/telkom-radius-ip/1.0/getNDByIP?ip='.$data->ip_addr.'');
-         $tLog = time().'.'.rand(111111, 999999);
-        Storage::put($tLog.'.txt', $response);
-    
-        $nd = json_decode($response, true);
-        $nd_number = $nd['data']['ND'];
-        $nde = $nd['data']['ND'] .='@telkom.net';
-        
-        $task = DB::table('task_active')
-        ->where('uid', $request->uid)
-        ->update(['nd' => $nde, 'nd_number'=> $nd_number]);
-
-        if($task > 0){
-            $output['success'] = true;
-            $output = array(
-                   
-                    'nd' =>  $nde,
-                    'ticket' => $data->ticket
-                    );
-        }else{
-            $output['error'] = 'error';
-        }
-       
-        echo json_encode($output);
-    }
     public function retrieveIPByND(Request $request){
         $output = array(
 			'success' => false
@@ -170,10 +103,15 @@ class CheckController extends Controller
 
        $online = json_decode($response, true);
        $framed_ip_addr = $online['output']['Framed-IP-Address'];
-
-       $output = array(
-        'frame_ip' =>  $framed_ip_addr
-        );
+        if(isset($framed_ip_addr)){
+            $output['success'] = true;
+            $output['data'] = array(
+                'frame_ip' =>  $framed_ip_addr
+            );
+        }else{
+            $output['error'] = $response;
+        }
+      
         $task = DB::table('task_active')
         ->where('uid', $request->uid)
         ->update(['framed_ip_address' => $framed_ip_addr]);
@@ -181,6 +119,38 @@ class CheckController extends Controller
         echo json_encode($output); 
     }
 
+    public function saveMyIP(Request $request){
+        $output = array(
+			'success' => false
+		);
+
+        $data = DB::table('task_active')
+        ->select('nd','ticket', 'framed_ip_address')
+        ->where('uid', $request->uid)
+        ->first();
+
+        if(isset($data->framed_ip_address) != null && isset($request->ip_addr) != null){
+            if($data->framed_ip_address == $request->ip_addr){
+                $passed = 1;
+            }else{
+                $passed = 0;
+            }
+        }else{
+            $passed = null;
+        }
+
+        DB::table('task_active')
+        ->where('uid', $request->uid)
+        ->update(['ip_addr' => $request->ip_addr, 'ip_passed'=>$passed]);
+        
+        $output = array(
+			'success' => true,
+            'ticket' => $data->ticket,
+            'nd' => $data->nd
+		);
+        echo json_encode($output);
+    }
+   
     public function retrieveUkur(Request $request){
         $output = array(
 			'success' => false
@@ -223,7 +193,7 @@ class CheckController extends Controller
             'redaman_passed' => $passed
         );
 
-                echo json_encode($output); 
+        echo json_encode($output); 
     }
 
     public function retrievePCRF(Request $request){
@@ -260,12 +230,9 @@ class CheckController extends Controller
                 );
 
         echo json_encode($output); 
-
     }
 
     public function retrieveSpeed(Request $request){
-        // dd( DB::select("select fn_varbintohexsubstring ( 1, '$password', 1, 0 ) AS result") );
-     
  
         $payload = json_decode(file_get_contents('php://input'), true);
         
@@ -282,24 +249,18 @@ class CheckController extends Controller
         $passed = DB::select("select speed_requirement ( '$data->package_name', '$data->quota_used',  $speed) AS result");
         
         $resultArray =  (array) $passed;
-        // dd();
-        // $object = array_shift($passed);
-        // $result = json_decode($passed, true);
-        // $obj = json_decode($passed);
-        // $txt = $result['result']; // text
-        
-        // print_r($passed->[0]->result);
+
         $task = DB::table('task_active')
         ->where('uid',$uid)
         ->update([
-            'speed_passed' => $resultArray[0]->result,//$passed['result'],
+            'speed_passed' => $resultArray[0]->result,
             'speedtest_download'=> $v01speedtest_download,
             'speedtest_upload'=>$v01speedtest_upload,
             'units' => $v01speedtest_units
         ]);
 
         $output = array(
-            'speed_passed' => $resultArray[0]->result,//$passed['result'],
+            'speed_passed' => $resultArray[0]->result,  
             'download'=> $v01speedtest_download
         );
 
@@ -312,13 +273,15 @@ class CheckController extends Controller
         ->where('uid', $request->uid)
         ->first();
 
-        if($data->redaman_passed == null || $data->speed_passed == null ){
+        if(isset($data->redaman_passed) == null || isset($data->speed_passed) == null){
             $passed = null;
-        }else if($data->redaman_passed== 1 && $data->speed_passed  == 1){
-            $passed = 1;
-        } 
-        else{
-            $passed = 0;
+        }else {
+                if($data->redaman_passed == 1 && $data->speed_passed  == 1){
+                $passed = 1;
+            }
+            else{
+                $passed = 1;
+            }
         }
 
         $task = DB::table('task_active')
